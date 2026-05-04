@@ -16,8 +16,7 @@ interface ModeToggleProps {
 }
 
 export function ModeToggle({ toggle }: ModeToggleProps) {
-  const { setTheme } = useTheme();
-  const { theme } = useTheme();
+  const { setTheme, theme } = useTheme();
 
   const handleToggle = () => {
     if (theme === "light") {
