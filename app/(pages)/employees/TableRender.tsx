@@ -7,6 +7,17 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -17,10 +28,11 @@ import {
 } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/client";
 import { Employee } from "@/types";
-import { Pencil, Trash2, X } from "lucide-react";
+import { Eye, Pencil, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 interface TableRenderProps {
   data: Employee[];
@@ -28,6 +40,7 @@ interface TableRenderProps {
 
 const TableRender = ({ data }: TableRenderProps) => {
   const [employees, setEmployees] = useState<Employee[]>(data);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -90,6 +103,94 @@ const TableRender = ({ data }: TableRenderProps) => {
                   {employee?.department?.name || "N/A"}
                 </TableCell>
                 <TableCell className="flex items-center">
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger>
+                      <Eye size={14} className="mr-4 cursor-pointer" />
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-sm">
+                      <DialogHeader>
+                        <DialogTitle>Employee Details</DialogTitle>
+                        <DialogDescription>
+                          Here are the details of the employee. You can edit
+                          them by clicking the pencil icon or delete the
+                          employee by clicking the trash icon.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogContent>
+                        <div className="space-y-4">
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">
+                              Name
+                            </p>
+                            <p>{employee.name}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">
+                              Email
+                            </p>
+                            <p>{employee.email}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">
+                              Phone
+                            </p>
+                            <p>{employee.phone}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">
+                              Position
+                            </p>
+                            <p>{employee?.position?.name || "N/A"}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">
+                              Department
+                            </p>
+                            <p>{employee?.department?.name || "N/A"}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">
+                              Status
+                            </p>
+                            <p>{employee.status}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">
+                              Address
+                            </p>
+                            <p>{employee.address}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">
+                              Created At
+                            </p>
+                            <p>
+                              {new Date(employee.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">
+                              Updated At
+                            </p>
+                            <p>
+                              {new Date(employee.updated_at).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <DialogClose>
+                            <Button variant="outline">Close</Button>
+                          </DialogClose>
+                          <Link
+                            href={`/employees/${employee.id}`}
+                            type="submit"
+                          >
+                            <Button>Edit</Button>
+                          </Link>
+                        </DialogFooter>
+                      </DialogContent>
+                    </DialogContent>
+                  </Dialog>
                   <Pencil
                     size={14}
                     className="cursor-pointer"
