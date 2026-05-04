@@ -34,7 +34,7 @@ const DashboardPage = async () => {
   }
 
   return (
-    <div className="md:p-6 p-4">
+    <div className="md:p-6 p-4 h-screen">
       <TitlePage
         title="Dashboard"
         description="Welcome to the Employees page! Here you can manage all employee-related information."
