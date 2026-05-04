@@ -108,13 +108,6 @@ const TableRender = ({ data, entity }: TableRenderProps) => {
                     </Button>
                   </PopoverContent>
                 </Popover>
-                {/* <Trash2
-                  size={14}
-                  onClick={() => handleDelete(en.id)}
-                  className="ml-4 cursor-pointer"
-                >
-                  Delete
-                </Trash2> */}
               </TableCell>
             </TableRow>
           ))}
