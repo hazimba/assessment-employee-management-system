@@ -12,7 +12,7 @@ import {
 interface TitlePageProps {
   title: string;
   description: string;
-  linkHref: string;
+  linkHref?: string;
 }
 
 const TitlePage = ({ title, description, linkHref }: TitlePageProps) => {
@@ -46,22 +46,15 @@ const TitlePage = ({ title, description, linkHref }: TitlePageProps) => {
     fetchDepartmentsCount();
   }, []);
 
-  console.log("title:", title);
-
-  console.log("Departments count:", countDept);
-  console.log("Positions count:", countPos);
-
   return (
     <>
-      <div className="flex md:items-center items-start justify-between md:mb-4">
+      <div className="flex  items-start justify-between md:mb-4 ">
         <h1 className="text-2xl font-semibold mb-4">{title}</h1>
 
         {title === "Employees" && (countDept === 0 || countPos === 0) ? (
           <Tooltip>
             <TooltipTrigger>
-              <Button disabled variant="outline">
-                Add {title}
-              </Button>
+              <div className="cursor-not-allowed opacity-50">Add {title}</div>
             </TooltipTrigger>
             <TooltipContent>
               <div>
@@ -71,12 +64,14 @@ const TitlePage = ({ title, description, linkHref }: TitlePageProps) => {
             </TooltipContent>
           </Tooltip>
         ) : (
-          <Link href={linkHref} className="cursor-pointer">
-            <Button variant="outline">Add {title}</Button>
-          </Link>
+          linkHref && (
+            <Link href={linkHref} className="inline-block">
+              <Button variant="outline">Add {title}</Button>
+            </Link>
+          )
         )}
       </div>
-      <p>{description}</p>
+      <p className="max-w-1/2">{description}</p>
     </>
   );
 };

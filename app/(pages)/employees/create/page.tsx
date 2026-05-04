@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { createClient } from "@/lib/supabase/client";
@@ -33,8 +33,9 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Link2 } from "lucide-react";
-import { Department, Position } from "@/types";
-import { redirect } from "next/navigation";
+import { Department, Position, Employee } from "@/types";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const formSchema = z.object({
   name: z
@@ -52,7 +53,11 @@ const formSchema = z.object({
   updated_at: z.string().optional(),
 });
 
-const CreateEditEmployeeForm = () => {
+const CreateEditEmployeeForm = ({
+  initialData,
+}: { initialData?: Employee } = {}) => {
+  const isEditing = !!initialData;
+  const router = useRouter();
   const [departments, setDepartments] = useState<Department[]>([]);
   const [positions, setPositions] = useState<Position[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -86,16 +91,31 @@ const CreateEditEmployeeForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      address: "",
-      department_id: null,
-      position_id: null,
-      role: "",
-      status: null,
+      name: initialData?.name ?? "",
+      email: initialData?.email ?? "",
+      phone: initialData?.phone ?? "",
+      address: initialData?.address ?? "",
+      department_id: initialData?.department_id
+        ? String(initialData.department?.name)
+        : null,
+      position_id: initialData?.position_id
+        ? String(initialData.position?.name)
+        : null,
+      role: initialData?.role ?? "employee",
+      status: initialData?.status ?? "active",
     },
   });
+
+  const watchRole = useWatch({ control: form.control, name: "role" });
+  const watchDepartmentId = useWatch({
+    control: form.control,
+    name: "department_id",
+  });
+  const watchPositionId = useWatch({
+    control: form.control,
+    name: "position_id",
+  });
+  const watchStatus = useWatch({ control: form.control, name: "status" });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     toast("You submitted the following values:", {
@@ -120,29 +140,40 @@ const CreateEditEmployeeForm = () => {
       position_id:
         positions.find((p) => p.name === data.position_id)?.id || null,
     };
-    console.log("Data to insert into Supabase:", dataToInsert);
 
     try {
       const supabase = createClient();
 
-      const { error } = await supabase.from("employees").insert([dataToInsert]);
-      if (error) throw error;
+      if (isEditing) {
+        const { error } = await supabase
+          .from("employees")
+          .update({ ...dataToInsert, updated_at: new Date().toISOString() })
+          .eq("id", initialData!.id);
+        if (error) throw error;
+        toast.success("Employee updated successfully!");
+      } else {
+        const { error } = await supabase
+          .from("employees")
+          .insert([dataToInsert]);
+        if (error) throw error;
+        toast.success("Employee created successfully!");
+      }
+      router.push("/employees");
     } catch (error) {
-      setError(`${error ? error.details : "Failed to create employee."}`);
-    } finally {
-      form.reset();
-      redirect("/employees");
+      setError("Failed to save employee. Please try again.");
+      console.error(error);
     }
   }
 
   return (
-    <>
+    <div className="md:p-6 p-4">
       {" "}
       <Card className="w-full sm:max-w-md">
         <CardHeader>
-          <CardTitle>Create Employee</CardTitle>
+          <CardTitle>{isEditing ? "Edit" : "Create"} Employee</CardTitle>
           <CardDescription>
-            Fill out the form below to create a new employee.
+            Fill out the form below to{" "}
+            {isEditing ? "update the" : "create a new"} employee.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -231,19 +262,18 @@ const CreateEditEmployeeForm = () => {
                   </span>
                 </Label>
                 <Select
-                  value={form.watch("role") || "none"}
-                  onValueChange={(v) => {
-                    console.log("Selected role:", v);
-                    form.setValue("role", v === "none" ? "" : v);
-                  }}
+                  value={watchRole || "none"}
+                  onValueChange={(v) =>
+                    form.setValue("role", v === "none" ? "" : v)
+                  }
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select role..." />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">none</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="employee">Employee</SelectItem>
+                    <SelectItem value="admin">admin</SelectItem>
+                    <SelectItem value="employee">employee</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -255,11 +285,10 @@ const CreateEditEmployeeForm = () => {
                   </span>
                 </Label>
                 <Select
-                  value={form.watch("department_id") || "none"}
-                  onValueChange={(v) => {
-                    console.log("Selected department ID:", v);
-                    form.setValue("department_id", v === "none" ? "" : v);
-                  }}
+                  value={watchDepartmentId || "none"}
+                  onValueChange={(v) =>
+                    form.setValue("department_id", v === "none" ? "" : v)
+                  }
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select department..." />
@@ -279,11 +308,10 @@ const CreateEditEmployeeForm = () => {
                   <span className="flex items-center gap-1.5">Position</span>
                 </Label>
                 <Select
-                  value={form.watch("position_id") || "none"}
-                  onValueChange={(v) => {
-                    console.log("Selected position ID:", v);
-                    form.setValue("position_id", v === "none" ? "" : v);
-                  }}
+                  value={watchPositionId || "none"}
+                  onValueChange={(v) =>
+                    form.setValue("position_id", v === "none" ? "" : v)
+                  }
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select position..." />
@@ -298,11 +326,37 @@ const CreateEditEmployeeForm = () => {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-2">
+                <Label>
+                  <span className="flex items-center gap-1.5">
+                    <Link2 className="h-3.5 w-3.5" />
+                    Status
+                  </span>
+                </Label>
+                <Select
+                  value={watchStatus || "none"}
+                  onValueChange={(v) =>
+                    form.setValue("status", v === "none" ? "" : v)
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select status..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">none</SelectItem>
+                    <SelectItem value="active">active</SelectItem>
+                    <SelectItem value="inactive">inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </FieldGroup>
           </form>
         </CardContent>
         <CardFooter>
           <Field orientation="horizontal">
+            <Link href="/employees" className="mr-auto">
+              Back
+            </Link>
             <Button
               type="button"
               variant="outline"
@@ -317,7 +371,7 @@ const CreateEditEmployeeForm = () => {
         </CardFooter>
       </Card>
       {error && <div className="mt-2 text-red-600">{error}</div>}
-    </>
+    </div>
   );
 };
 export default CreateEditEmployeeForm;

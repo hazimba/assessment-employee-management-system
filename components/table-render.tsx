@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import { Position } from "@/types";
@@ -83,6 +83,7 @@ const TableRender = ({ data, entity }: TableRenderProps) => {
               <TableCell>{format(new Date(en.created_at), "PPP")}</TableCell>
               <TableCell>{format(new Date(en.updated_at), "PPP")}</TableCell>
               <TableCell className="flex items-center">
+                <Eye size={14} className="mr-4 cursor-pointer" />
                 <Pencil
                   size={14}
                   className="cursor-pointer"

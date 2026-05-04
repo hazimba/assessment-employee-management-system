@@ -13,7 +13,7 @@ const DepartmentsPage = async () => {
   }
 
   return (
-    <div className="md:p-6 p-0">
+    <div className="md:p-6 p-4">
       <TitlePage
         title="Departments"
         description="This is the Departments page. You can manage your company's departments here."

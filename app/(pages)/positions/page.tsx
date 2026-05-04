@@ -12,10 +12,8 @@ const PositionPage = async () => {
     return <div>Error fetching positions</div>;
   }
 
-  console.log("Positions data:", data);
-
   return (
-    <div className="md:p-6 p-0">
+    <div className="md:p-6 p-4">
       <TitlePage
         title="Positions"
         description="This is the Positions page. You can manage your company's positions here."

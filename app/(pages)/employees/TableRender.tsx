@@ -18,7 +18,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { Employee } from "@/types";
 import { Pencil, Trash2, X } from "lucide-react";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -28,6 +28,7 @@ interface TableRenderProps {
 
 const TableRender = ({ data }: TableRenderProps) => {
   const [employees, setEmployees] = useState<Employee[]>(data);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -72,8 +73,8 @@ const TableRender = ({ data }: TableRenderProps) => {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Position</TableHead>
-              <TableHead>Department</TableHead>
+              <TableHead className="hidden md:table-cell">Position</TableHead>
+              <TableHead className="hidden md:table-cell">Department</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -82,8 +83,12 @@ const TableRender = ({ data }: TableRenderProps) => {
               <TableRow key={employee.id}>
                 <TableCell>{employee.name}</TableCell>
                 <TableCell>{employee.email}</TableCell>
-                <TableCell>{employee?.position?.name || "N/A"}</TableCell>
-                <TableCell>{employee?.department?.name || "N/A"}</TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {employee?.position?.name || "N/A"}
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {employee?.department?.name || "N/A"}
+                </TableCell>
                 <TableCell className="flex items-center">
                   <Pencil
                     size={14}
