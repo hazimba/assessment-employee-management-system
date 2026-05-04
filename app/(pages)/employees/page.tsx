@@ -13,8 +13,6 @@ const EmployeesPage = async () => {
     return <div>Error fetching employees</div>;
   }
 
-  console.log("Fetched employees:", employees);
-
   return (
     <div className="md:p-6 p-0">
       <TitlePage
@@ -22,7 +20,7 @@ const EmployeesPage = async () => {
         description="This is the Employees page. You can manage your company's employees here."
         linkHref="/employees/create"
       />
-      <TableRender employees={employees} />
+      <TableRender data={employees} />
     </div>
   );
 };

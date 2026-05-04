@@ -46,10 +46,6 @@ const TableRender = ({ data }: TableRenderProps) => {
     fetchEmployees();
   }, []);
 
-  const handleEdit = (id: number) => {
-    console.log("Edit employee with id:", id);
-  };
-
   const handleDelete = async (id: number) => {
     console.log("Delete employee with id:", id);
     const supabase = await createClient();
@@ -121,13 +117,13 @@ const TableRender = ({ data }: TableRenderProps) => {
         </Table>
       ) : (
         <div className="p-4 border rounded-md bg-muted mt-4">
-          <p className="text-center text-muted-foreground animate-pulse">
+          <div className="text-center text-muted-foreground animate-pulse">
             <X size={24} className="mx-auto mb-2" />
             <div>
               No employees found. Please add some employees to see them listed
               here.
             </div>
-          </p>
+          </div>
         </div>
       )}
     </div>

@@ -276,10 +276,7 @@ const CreateEditEmployeeForm = () => {
               </div>
               <div className="space-y-2">
                 <Label>
-                  <span className="flex items-center gap-1.5">
-                    <Link2 className="h-3.5 w-3.5" />
-                    Position
-                  </span>
+                  <span className="flex items-center gap-1.5">Position</span>
                 </Label>
                 <Select
                   value={form.watch("position_id") || "none"}
