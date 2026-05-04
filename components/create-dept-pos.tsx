@@ -24,12 +24,16 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface EntityProps {
   entity: string;
+  initialData?: { id: number; name: string };
 }
 
-const CreateDeptPosPage = ({ entity }: EntityProps) => {
+const CreateEditDeptPosPage = ({ entity, initialData }: EntityProps) => {
+  const router = useRouter();
+  const isEditing = !!initialData;
   const formSchema = z.object({
     name: z
       .string()
@@ -42,28 +46,49 @@ const CreateDeptPosPage = ({ entity }: EntityProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: initialData?.name ?? "",
     },
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
       const supabase = createClient();
-      const { error } = await supabase.from(entity).insert({
-        name: data.name,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
 
-      if (error) {
-        toast.error(`Failed to create ${entity}. Please try again.`);
-        console.error("Supabase error:", error);
+      if (isEditing) {
+        const { error } = await supabase
+          .from(entity)
+          .update({ name: data.name, updated_at: new Date().toISOString() })
+          .eq("id", initialData!.id);
+
+        if (error) {
+          toast.error(`Failed to update ${entity}. Please try again.`);
+          console.error("Supabase error:", error);
+        } else {
+          toast.success(`${entity} updated successfully!`);
+          router.push(`/${entity}`);
+        }
       } else {
-        toast.success(`${entity} created successfully!`);
-        form.reset();
+        const { error } = await supabase.from(entity).insert({
+          name: data.name,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+
+        if (error) {
+          toast.error(`Failed to create ${entity}. Please try again.`);
+          console.error("Supabase error:", error);
+        } else {
+          toast.success(`${entity} created successfully!`);
+          form.reset();
+          router.push(`/${entity}`);
+        }
       }
     } catch (error) {
-      toast.error(`Failed to create ${entity}. Please try again.`);
+      toast.error(
+        `Failed to ${
+          isEditing ? "update" : "create"
+        } ${entity}. Please try again.`
+      );
       console.error("Unexpected error:", error);
     }
   }
@@ -72,9 +97,12 @@ const CreateDeptPosPage = ({ entity }: EntityProps) => {
     <div className="md:p-6 p-0">
       <Card className="w-full sm:max-w-md">
         <CardHeader>
-          <CardTitle>Create {entity}</CardTitle>
+          <CardTitle>
+            {isEditing ? "Edit" : "Create"} {entity}
+          </CardTitle>
           <CardDescription>
-            Use the form below to create a new {entity}.
+            Use the form below to {isEditing ? "edit this" : "create a new"}{" "}
+            {entity}.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -116,7 +144,11 @@ const CreateDeptPosPage = ({ entity }: EntityProps) => {
             >
               Reset
             </Button>
-            <Button type="submit" form="form-rhf-demo">
+            <Button
+              type="submit"
+              form="form-rhf-demo"
+              className="cursor-pointer"
+            >
               Submit
             </Button>
           </Field>
@@ -126,4 +158,4 @@ const CreateDeptPosPage = ({ entity }: EntityProps) => {
   );
 };
 
-export default CreateDeptPosPage;
+export default CreateEditDeptPosPage;

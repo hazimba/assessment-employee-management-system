@@ -1,6 +1,6 @@
+import TableRender from "@/components/table-render";
 import TitlePage from "@/components/title-page";
 import { createClient } from "@/lib/supabase/client";
-import Link from "next/link";
 
 const DepartmentsPage = async () => {
   const supabase = createClient();
@@ -12,8 +12,6 @@ const DepartmentsPage = async () => {
     return <div>Error fetching departments</div>;
   }
 
-  console.log("Departments data:", data);
-
   return (
     <div className="md:p-6 p-0">
       <TitlePage
@@ -21,6 +19,10 @@ const DepartmentsPage = async () => {
         description="This is the Departments page. You can manage your company's departments here."
         linkHref="/departments/create"
       />
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold">Department List</h2>
+        <TableRender data={data} entity="departments" />
+      </div>
     </div>
   );
 };

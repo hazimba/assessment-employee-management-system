@@ -1,7 +1,7 @@
-import CreateDeptPosPage from "@/components/create-dept-pos";
+import CreateEditDeptPosPage from "@/components/create-dept-pos";
 
 const Page = () => {
-  return <CreateDeptPosPage entity="positions" />;
+  return <CreateEditDeptPosPage entity="positions" />;
 };
 
 export default Page;
