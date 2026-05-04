@@ -24,7 +24,7 @@ const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/employees", label: "Employees", icon: Users },
   { href: "/departments", label: "Departments", icon: Building2 },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/positions", label: "Positions", icon: Settings },
 ];
 
 const NavigationMenu = ({ mobileView }: NavigationMenuProps) => {
@@ -59,7 +59,7 @@ const NavigationMenu = ({ mobileView }: NavigationMenuProps) => {
           <DropdownMenuTrigger>
             <Menu className="w-6 h-6 md:hidden" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-48">
+          <DropdownMenuContent className="mt-2 w-48">
             {navMenu()}
           </DropdownMenuContent>
         </DropdownMenu>

@@ -11,8 +11,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </span>
         </div>
 
-        <NavigationMenu mobileView />
-        <ModeToggle toggle />
+        <div className="flex items-center gap-4">
+          <ModeToggle toggle />
+          <NavigationMenu mobileView />
+        </div>
       </header>
 
       <div className="flex flex-1 ">
