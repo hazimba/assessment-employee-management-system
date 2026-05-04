@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+import NoDataFound from "@/components/no-data-found";
 import {
   Dialog,
   DialogClose,
@@ -28,11 +29,11 @@ import {
 } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/client";
 import { Employee } from "@/types";
-import { Eye, Pencil, Trash2, X } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface TableRenderProps {
   data: Employee[];
@@ -80,19 +81,26 @@ const TableRender = ({ data }: TableRenderProps) => {
   return (
     <div className="mt-6">
       <h2 className="text-xl font-semibold">Employee List</h2>
-      {employees && employees.length > 0 ? (
-        <Table>
-          <TableHeader>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead className="hidden md:table-cell">Position</TableHead>
+            <TableHead className="hidden md:table-cell">Department</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {employees.length === 0 ? (
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead className="hidden md:table-cell">Position</TableHead>
-              <TableHead className="hidden md:table-cell">Department</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableCell colSpan={5} className="text-center">
+                <NoDataFound entity="employees" />
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {employees.map((employee) => (
+          ) : (
+            employees.map((employee) => (
               <TableRow key={employee.id}>
                 <TableCell>{employee.name}</TableCell>
                 <TableCell>{employee.email}</TableCell>
@@ -218,20 +226,10 @@ const TableRender = ({ data }: TableRenderProps) => {
                   </Popover>
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      ) : (
-        <div className="p-4 border rounded-md bg-muted mt-4">
-          <div className="text-center text-muted-foreground animate-pulse">
-            <X size={24} className="mx-auto mb-2" />
-            <div>
-              No employees found. Please add some employees to see them listed
-              here.
-            </div>
-          </div>
-        </div>
-      )}
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 };
