@@ -1,13 +1,9 @@
 "use client";
-import Link from "next/link";
-import { Button } from "./ui/button";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { toast } from "sonner";
+import { Button } from "./ui/button";
 
 interface TitlePageProps {
   title: string;
@@ -52,17 +48,19 @@ const TitlePage = ({ title, description, linkHref }: TitlePageProps) => {
         <h1 className="text-2xl font-semibold mb-4">{title}</h1>
 
         {title === "Employees" && (countDept === 0 || countPos === 0) ? (
-          <Tooltip>
-            <TooltipTrigger>
-              <div className="cursor-not-allowed opacity-50">Add {title}</div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <div>
-                Please add at least one department and one position before
-                adding employees.
-              </div>
-            </TooltipContent>
-          </Tooltip>
+          <div
+            className="cursor-not-allowed opacity-50"
+            onClick={() => {
+              toast.error(
+                <div className="text-sm md:text-base">
+                  Please add at least one department and one position before
+                  adding employees.
+                </div>
+              );
+            }}
+          >
+            Add {title}
+          </div>
         ) : (
           linkHref && (
             <Link href={linkHref} className="inline-block">
