@@ -8,7 +8,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import { Position } from "@/types";
@@ -32,6 +42,7 @@ interface TableRenderProps {
 
 const TableRender = ({ data, entity }: TableRenderProps) => {
   const [entities, setEntities] = useState<Position[]>(data);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -83,6 +94,11 @@ const TableRender = ({ data, entity }: TableRenderProps) => {
               <TableCell>{format(new Date(en.created_at), "PPP")}</TableCell>
               <TableCell>{format(new Date(en.updated_at), "PPP")}</TableCell>
               <TableCell className="flex items-center">
+                <Eye
+                  size={14}
+                  className="mr-4 cursor-pointer"
+                  onClick={() => setIsDialogOpen(true)}
+                />
                 <Pencil
                   size={14}
                   className="cursor-pointer"

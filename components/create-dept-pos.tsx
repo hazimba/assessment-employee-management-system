@@ -94,7 +94,7 @@ const CreateEditDeptPosPage = ({ entity, initialData }: EntityProps) => {
   }
 
   return (
-    <div className="md:p-6 p-0">
+    <div className="md:p-6 p-4">
       <Card className="w-full sm:max-w-md">
         <CardHeader>
           <CardTitle>
