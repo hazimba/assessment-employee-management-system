@@ -12,13 +12,12 @@ const DashboardPage = async () => {
   console.log("Employees data:", data);
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
       <p>
-        Welcome to your dashboard! Here you can manage your account, view your
-        activity, and access exclusive features.
+        Welcome to the Employees page! Here you can manage all employee-related
+        information.
       </p>
-      {/* Add more dashboard content here */}
     </div>
   );
 };
