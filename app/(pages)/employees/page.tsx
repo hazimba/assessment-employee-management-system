@@ -1,11 +1,13 @@
+import TitlePage from "@/components/title-page";
+
 const EmployeesPage = () => {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Employees</h1>
-      <p>
-        Welcome to the Employees page! Here you can manage all employee-related
-        information.
-      </p>
+    <div className="md:p-6 p-0">
+      <TitlePage
+        title="Employees"
+        description="This is the Employees page. You can manage your company's employees here."
+        linkHref="/employees/create"
+      />
     </div>
   );
 };

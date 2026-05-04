@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button";
+import TitlePage from "@/components/title-page";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 
 const DepartmentsPage = async () => {
   const supabase = createClient();
@@ -14,17 +15,12 @@ const DepartmentsPage = async () => {
   console.log("Departments data:", data);
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold mb-4">Departments</h1>
-        <Button size="sm" className="cursor-pointer">
-          Add Department
-        </Button>
-      </div>
-      <p>
-        This is the Departments page. You can manage your company's departments
-        here.
-      </p>
+    <div className="md:p-6 p-0">
+      <TitlePage
+        title="Departments"
+        description="This is the Departments page. You can manage your company's departments here."
+        linkHref="/departments/create"
+      />
     </div>
   );
 };
