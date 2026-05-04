@@ -22,6 +22,7 @@ import {
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -83,6 +84,7 @@ const TableRender = ({ data }: TableRenderProps) => {
       <h2 className="text-xl font-semibold">Employee List</h2>
 
       <Table>
+        <TableCaption>A list of your company&apos;s employees.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
